@@ -43,6 +43,7 @@ def convertLine(line):
 # Open the file and load the lines into a list of strings
 inputFile = open("input.txt", "r")
 Lines = inputFile.readlines()
+inputFile.close()
 
 sum = 0
 
