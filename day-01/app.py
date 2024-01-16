@@ -47,7 +47,7 @@ inputFile.close()
 
 sum = 0
 
-# Go trough the list, convert the lines into integers andSTEELSERIES Apex 5 add them all together
+# Go trough the list, convert the lines into integers and add them all together
 for line in Lines:
     sum += int(convertLine(line))
 

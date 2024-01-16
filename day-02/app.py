@@ -4,6 +4,9 @@ class GameSet:
         self.green = 0
         self.blue = 0
 
+    def getPower(self):
+        return self.red * self.green * self.blue
+
 
 inputFile = open("input.txt", "r")
 Lines = inputFile.readlines()
@@ -27,7 +30,8 @@ def getSets(line):
                .split(";")   
     return sets
 
-def parseSet(_set):
+
+def getCubes(_set):
     gameSet = GameSet()
     cubes = _set.split(",")
     for cube in cubes:
@@ -40,24 +44,44 @@ def parseSet(_set):
     return gameSet
 
 
-sum = 0
-for line in Lines:
-    isPossible = False
+def GetPart1Result():
+    result = 0
+    for line in Lines:
+        isPossible = False
 
-    for _set in getSets(line):
-        gameSet = parseSet(_set)
-        if gameSet.red <= bag["red"] and gameSet.green <= bag["green"] and gameSet.blue <= bag["blue"]:
-            isPossible = True
-        else:
-            isPossible = False
-            break
-    
-    if isPossible:
-        sum += getID(line)
+        for _set in getSets(line):
+            cubes = getCubes(_set)
+            if cubes.red <= bag["red"] and cubes.green <= bag["green"] and cubes.blue <= bag["blue"]:
+                isPossible = True
+            else:
+                isPossible = False
+                break
+        
+        if isPossible:
+            result += getID(line)
+    return result
 
+def GetPart2Result():
+    result = 0
+    for line in Lines:
+        power = 0
+        lowestSet = GameSet()
+        
+        for _set in getSets(line):
+            cubes = getCubes(_set)
+            if cubes.red > lowestSet.red:
+                lowestSet.red = cubes.red
+            if cubes.green > lowestSet.green:
+                lowestSet.green = cubes.green
+            if cubes.blue > lowestSet.blue:
+                lowestSet.blue = cubes.blue
 
-print(sum)
-    
+        power = lowestSet.getPower()
+        result += power
+    return result
+
+print("Part 1 result: " + str(GetPart1Result()))
+print("Part 2 result: " + str(GetPart2Result()))
   
 
 
