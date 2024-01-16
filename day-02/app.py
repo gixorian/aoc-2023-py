@@ -1,8 +1,8 @@
 class GameSet:
-    def __init__(self, red, green, blue):
-        self.red = red
-        self.green =  green
-        self.blue = blue
+    def __init__(self):
+        self.red = 0
+        self.green = 0
+        self.blue = 0
 
 
 inputFile = open("input.txt", "r")
@@ -17,7 +17,7 @@ bag = {
 
 def getID(line):
     id = line.split(":")[0].replace("Game ", "")
-    return id
+    return int(id)
 
 
 def getSets(line):
@@ -27,31 +27,39 @@ def getSets(line):
                .split(";")   
     return sets
 
-def parseGame(sets):
-    cubes = [0, 0, 0]
-    gameSet = GameSet(0, 0, 0)
-    
-    for gameSet in sets:
-        i = 0
-
-        for _set in gameSet.split(","):
-            cubes[i] = _set
-            i = i+1
-
-        gameSet = GameSet(cubes[0], cubes[1], cubes[2])
-
+def parseSet(_set):
+    gameSet = GameSet()
+    cubes = _set.split(",")
+    for cube in cubes:
+        if "red" in cube:
+            gameSet.red = int(cube.replace(" red", "").replace(" ", ""))
+        if "green" in cube:
+            gameSet.green = int(cube.replace(" green", "").replace(" ", ""))
+        if "blue" in cube:
+            gameSet.blue = int(cube.replace(" blue", "").replace(" ", ""))
     return gameSet
 
 
-#cubes = [0, 0, 0]
-#print(cubes[0], cubes[1], cubes[2])
-
+sum = 0
 for line in Lines:
-    currentSet = parseGame(getSets(line))
-    print(currentSet.red)
+    isPossible = False
 
-#print(getSets(line))
-#print(getID(line))
+    for _set in getSets(line):
+        gameSet = parseSet(_set)
+        if gameSet.red <= bag["red"] and gameSet.green <= bag["green"] and gameSet.blue <= bag["blue"]:
+            isPossible = True
+        else:
+            isPossible = False
+            break
+    
+    if isPossible:
+        sum += getID(line)
+
+
+print(sum)
+    
+  
+
 
 
 # Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
