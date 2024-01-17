@@ -1,92 +1,85 @@
-# xStart xEnd
-# y
-
-
-# line Y
-# c X
+class Cell():
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
 class Number:
 
-    def __init__(self, x_start, x_end, y, value):
-        self.x_start = x_start
-        self.x_end = x_end
+    def __init__(self, x_range, y, value):
+        self.x_range = x_range
         self.y = y
         self.value = value
-    
-    def getRange(self):
-        xRange = []
-        for i in range(self.x_start, self.x_end+1):
-            xRange.append(i)
-        return xRange
    
 
 inputFile = open("input.txt", "r")
 lines = inputFile.readlines()
 inputFile.close()
 
-x, y = 0, 0
-xStart, xEnd = 0, 0
-nums = []
-num = ""
-for line in lines:
-    line = line.strip("\n")
-    
-    for c in line:
-        #print("\nx: " + str(x) + ", y: " + str(y))
-        
-        if c.isnumeric():
-            if num == "":
-                xStart = x
-            else:
-                xEnd = x
-            num += c
-        else:
-            #print(str(xStart) + "-" + num + "-" + str(xEnd))
-            if num != "":
-                nums.append(Number(xStart, xEnd, y, int(num)))
-            num = ""
-        
-        x = x + 1
-    
-    x = 0
-    y = y + 1
+def GetNumbers():
+    x, y = 0, 0
+    nums = []
+    for line in lines:
+        line = line.strip("\n")
+        prevC = ""
+        for c in line:
+            if c.isnumeric():
+                if not prevC.isnumeric():
+                    nums.append(Number([x], y, c))
+                else:
+                    nums[-1].x_range.append(x)
+                    nums[-1].value += c
+            x = x + 1
+            prevC = c
+        x = 0
+        y = y + 1
+    return nums
 
 def IsSymbol(character):
-    if not character.isnumeric() and character != ".":
+    if not character.isnumeric() and character != "." and character != "\n":
         return True
     return False
 
-def GetNeighbours(x, y):
-    neighbours = []
-    if y > 0:
-        neighbours.append(lines[y-1][x])
-        if x > 0:
-            neighbours.append(lines[y-1][x-1])
-        if x < len(lines[y]):
-            neighbours.append(lines[y-1][x+1])
-    if y < len(lines):
-        neighbours.append(lines[y+1][x])
-        if x > 0:
-            neighbours.append(lines[y+1][x-1])
-        if x < len(lines[y]):
-            neighbours.append(lines[y+1][x+1])
-    if x > 0:
-        neighbours.append(lines[y][x-1])
-    if x < len(lines[y]):
-        neighbours.append(lines[y][x+1])
+def GetNeighbours(y, x):
+    neighbors = []
+
+    directions = [
+        (1, 0), (-1, 0), (0, 1), (0, -1),
+        (1, 1), (-1, 1), (1, -1), (-1, -1)
+    ]
+
+    for dy, dx in directions:
+        new_y, new_x = y + dy, x + dx
+
+        if 0 <= new_y < len(lines) and 0 <= new_x < len(lines[0]):
+            neighbors.append((new_y, new_x))
+
+    return neighbors
+
+def CheckNum(num):
+    for x in num.x_range:
+        for neighbour in GetNeighbours(num.y, x):
+            character = lines[neighbour[0]][neighbour[1]]
+            if IsSymbol(character):
+                return num
+    return None
+
+
+def GetPartNumbers():
+    partNums = []
+    for num in GetNumbers():
+        if not CheckNum(num) is None:
+            partNums.append(num)
+    return partNums
+
+
+sum = 0
+for partNum in GetPartNumbers():
+    sum += int(partNum.value)
+
+print(sum)
 
 
 
-def GetPartNums():
-    sum = 0
-    for num in nums:
-        y = num.y
-        for x in num.getRange():
-            if IsSymbol(lines[y-1][x-1]) or IsSymbol(lines[y-1][x]) or IsSymbol(lines[y-1][x+1]) or IsSymbol(lines[y][x-1]) or IsSymbol(lines[y][x]) or IsSymbol(lines[y][x+1]) or IsSymbol(lines[y+1][x-1]) or IsSymbol(lines[y+1][x]) or IsSymbol(lines[y+1][x+1]):
-                sum += num.value        
-    return sum
-
-print(GetPartNums())
 #  467..114..
 #  ...*......
 #  ..35..633.
