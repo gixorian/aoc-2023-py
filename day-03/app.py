@@ -72,21 +72,58 @@ def GetPartNumbers():
     return partNums
 
 
-sum = 0
-for partNum in GetPartNumbers():
-    sum += int(partNum.value)
+def GetPartNumbersOnLine(y):
+    nums = []
+    for partNum in GetPartNumbers():
+        if partNum.y == y:
+            nums.append(partNum)
+    return nums
 
-print(sum)
+def GetPart1Answer():
+    sum = 0
+    for partNum in GetPartNumbers():
+        sum += int(partNum.value)
+    return sum
 
+def GetNeighbourPartNumbers(y, x):
+    neighbours = GetNeighbours(y, x)
+    partNums = GetPartNumbersOnLine(y)
+    if y > 0:
+        for n in GetPartNumbersOnLine(y-1):
+            partNums.append(n)
+    if y < len(lines):
+        for n in GetPartNumbersOnLine(y+1):
+            partNums.append(n)
 
-
-#  467..114..
-#  ...*......
-#  ..35..633.
-#  ......#...
-#  617*......
-#  .....+.58.
-#  ..592.....
-#  ......755.
-#  ...$.*....
-#  .664.598..
+    gearNums = []
+    found = False
+    for partNum in partNums:
+        partY = partNum.y
+        for partX in partNum.x_range:
+            for neigbhour in neighbours:
+                if neigbhour[0] == partY and neigbhour[1] == partX:
+                    gearNums.append(partNum)
+                    found = True
+                    break
+            if found:
+                found = False
+                break
+    return gearNums
+            
+def GetPart2Answer():
+    sum = 0
+    y, x = 0, 0
+    for line in lines:
+        for c in line:
+            if c == '*':
+                neighbourPartNums = GetNeighbourPartNumbers(y, x)
+                if len(neighbourPartNums) == 2:
+                    gearRatio = int(neighbourPartNums[0].value) * int(neighbourPartNums[1].value)
+                    sum = sum + gearRatio
+            x = x + 1
+        x = 0
+        y = y + 1
+    return sum
+        
+print("Part 1 Answer: " + str(GetPart1Answer()))
+print("Part 2 Answer: " + str(GetPart2Answer()))
