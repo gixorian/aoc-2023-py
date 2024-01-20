@@ -1,10 +1,28 @@
+class Card:
+    
+    def __init__(self, id, winNumbers, ownNumbers):
+        self.id = id
+        self.winNumbers = winNumbers
+        self.ownNumbers = ownNumbers
+        self.wonCards = []
+    
+    def GetWinAmt(self):
+        winAmt = 0
+        for num in self.ownNumbers:
+            if self.winNumbers.__contains__(num):
+                winAmt += 1
+        return winAmt
+######################################################
+
 inputFile = open("input.txt", "r")
-cards = inputFile.readlines()
+lines = inputFile.readlines()
 inputFile.close()
+
+######################################################
 
 def GetPart1Answer():
     sum = 0
-    for card in cards:
+    for card in lines:
         card = card.split(':')[1].split("\n")[0]
         winningCard = card.split('|')[0].split(" ")
         myCard = card.split('|')[1].split(" ")
@@ -22,59 +40,59 @@ def GetPart1Answer():
                     gameScore = gameScore * 2
         sum = sum + gameScore
     return sum
+########################################################
 
-def GetCards():
-    winningCards = []
-    myCards = []
-    winningCard = ""
-    myCard = ""
-    for card in cards:
-        card = card.split(':')[1].split("\n")[0]
+def ParseInput():
+    cards = []
+    for line in lines:
+        id = line.split(':')[0].strip("Card ")
+        card = line.split(':')[1].split("\n")[0]
         winningCard = card.split('|')[0].split(" ")
         myCard = card.split('|')[1].split(" ")
+        
         while ("" in winningCard):
             winningCard.remove("")
-            winningCards.append(winningCard)
         while ("" in myCard):
             myCard.remove("")
-            myCards.append(myCard)
+        
+        newCard = Card(int(id), winningCard, myCard)
+        cards.append(newCard)    
+    return cards
 
-    return (winningCards, myCards)
 
-def ProcessCards(cards):
-    sum = 0
-    while (len(cards) > 0):
-        cardID = 0
-        winNum = 0
-        cardCopies = []
-        for card in cards:
-            winCard = card[0]
-            myCard = card[1]
-            for n in myCard:
-                if winCard.__contains__(n):
-                    winNum = winNum + 1
-                    cardCopies.append((card, cardID + winNum))    
-                    sum = sum + 1
-        cards = cardCopies[0]
-    return sum
+allCards = ParseInput()
 
-def GetPart2Answer():
-    ProcessCards(GetCards())
-    # sum = 0
-    # cardID = 0
-    # winNum = 0
-    # cardCopies = []
-    # for card in GetCards():
-    #     winCard = card[0]
-    #     myCard = card[1]
-    #     for n in myCard:
-    #         if winCard.__contains__(n):
-    #             winNum = winNum + 1
-    #             cardCopies.append((card, cardID + winNum))    
-    #     cardID = cardID + 1
+# for card in allCards:
+#     for i in range(card.id+1, card.id+card.GetWinAmt()+1):
+#         card.wonCards.append(allCards[i-1])
+#     print("\n")
 
-#print(GetPart2Answer()) 
-print("Part 1 Answer: " + str(GetPart1Answer()))
+sum = 0
+def GetWins(cards):
+    global sum
+    for card in cards:
+        if card.GetWinAmt() > 0:
+            #sum += card.GetWinAmt()
+            for i in range(card.id+1, card.id+1 + card.GetWinAmt()):
+                card.wonCards.append(allCards[i-1])
+                sum += 1
+                #print("Card " + str(card.id) + ": " + str(card.winNumbers) + " | " + str(card.ownNumbers))
+            GetWins(card.wonCards)
+                #for wonCard in card.wonCards:
+                    #print(str(wonCard.id) + ": " + str(wonCard.winNumbers) + " | " + str(wonCard.ownNumbers))
+                #print("\n")
+
+
+GetWins(allCards)
+
+print(sum)
+
+#def GetPart2Answer():
+    
+
+
+
+#print("Part 1 Answer: " + str(GetPart1Answer()))
 
 
 
@@ -97,4 +115,4 @@ print("Part 1 Answer: " + str(GetPart1Answer()))
     # Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
     # Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
     # Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
-    # Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
+    # Card 6: 3t 18 13 56 72 | 74 77 10 23 35 67 36 11
