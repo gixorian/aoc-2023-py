@@ -62,37 +62,24 @@ def ParseInput():
 
 allCards = ParseInput()
 
-# for card in allCards:
-#     for i in range(card.id+1, card.id+card.GetWinAmt()+1):
-#         card.wonCards.append(allCards[i-1])
-#     print("\n")
 
-sum = 0
+p2sum = 0
 def GetWins(cards):
-    global sum
+    global p2sum
     for card in cards:
+        p2sum += 1
         if card.GetWinAmt() > 0:
-            #sum += card.GetWinAmt()
             for i in range(card.id+1, card.id+1 + card.GetWinAmt()):
-                card.wonCards.append(allCards[i-1])
-                sum += 1
-                #print("Card " + str(card.id) + ": " + str(card.winNumbers) + " | " + str(card.ownNumbers))
+                cardCopy = Card(allCards[i-1].id, allCards[i-1].winNumbers, allCards[i-1].ownNumbers)
+                card.wonCards.append(cardCopy)
             GetWins(card.wonCards)
-                #for wonCard in card.wonCards:
-                    #print(str(wonCard.id) + ": " + str(wonCard.winNumbers) + " | " + str(wonCard.ownNumbers))
-                #print("\n")
-
 
 GetWins(allCards)
 
-print(sum)
-
-#def GetPart2Answer():
-    
+print("Part 1 Answer: " + str(GetPart1Answer()))
+print("Part 2 Answer: " + str(p2sum))
 
 
-
-#print("Part 1 Answer: " + str(GetPart1Answer()))
 
 
 
