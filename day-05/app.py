@@ -45,21 +45,45 @@ for line in lines:
         maps[index].append(line.split(" ")) 
 
 
-mappingNumber = 0
-rangeOffset = 0
-locations = []
-for seed in seeds:
-    mappingNumber = int(seed)
-    for map in maps:
-        for mapRanges in map:
-            if mappingNumber >= int(mapRanges[1]) and int(mappingNumber) < int(mapRanges[1])+int(mapRanges[2]):
-                rangeOffset = mappingNumber - int(mapRanges[1])
-                mappingNumber = int(mapRanges[0]) + rangeOffset
-                break
-    locations.append(mappingNumber)    
+def GetPart1Answer():
+    mappingNumber = 0
+    rangeOffset = 0
+    locations = []
+    for seed in seeds:
+        mappingNumber = int(seed)
+        for map in maps:
+            for mapRanges in map:
+                if mappingNumber >= int(mapRanges[1]) and int(mappingNumber) < int(mapRanges[1])+int(mapRanges[2]):
+                    rangeOffset = mappingNumber - int(mapRanges[1])
+                    mappingNumber = int(mapRanges[0]) + rangeOffset
+                    break
+        locations.append(mappingNumber)    
+    return min(locations)
 
-print(min(locations))
+def GetPart2Answer():
+    mappingNumber = 0
+    rangeOffset = 0
+    locations = []
+    for seedIndex in range(0, len(seeds), 2):
+        if seedIndex < len(seeds)-1:
+            seedMax = int(seeds[seedIndex])+int(seeds[seedIndex+1])
+        else:
+            seedMax = int(seeds[seedIndex])+1
+            
+        for seedNum in range(int(seeds[seedIndex]), seedMax): 
+            mappingNumber = seedNum
+            for map in maps:
+                for mapRanges in map:
+                    if mappingNumber >= int(mapRanges[1]) and int(mappingNumber) < int(mapRanges[1])+int(mapRanges[2]):
+                        rangeOffset = mappingNumber - int(mapRanges[1])
+                        mappingNumber = int(mapRanges[0]) + rangeOffset
+                        break
+            locations.append(mappingNumber)    
+        return min(locations)
 
+
+print("Part 1 Answer: " + str(GetPart1Answer()))
+print("Part 2 Answer: " + str(GetPart2Answer()))
 
 
 #for m in maps:
