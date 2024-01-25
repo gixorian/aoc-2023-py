@@ -53,9 +53,7 @@ def GetPart1Answer():
         mappingNumber = int(seed)
         for map in maps:
             for mapRanges in map:
-                if mappingNumber >= int(mapRanges[1]) and int(mappingNumber) < int(
-                    mapRanges[1]
-                ) + int(mapRanges[2]):
+                if mappingNumber >= int(mapRanges[1]) and int(mappingNumber) < int(mapRanges[1]) + int(mapRanges[2]):
                     rangeOffset = mappingNumber - int(mapRanges[1])
                     mappingNumber = int(mapRanges[0]) + rangeOffset
                     break
