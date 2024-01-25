@@ -87,28 +87,16 @@ def GetPart2Answer():
                         seedStart = targetRangeStart + (seedStart - sourceRangeStart)
                         seedEnd = targetRangeStart + (seedEnd - sourceRangeStart)
                         break
-                    elif (
-                        seedStart >= sourceRangeStart
-                        and seedStart < sourceRangeEnd
-                        and seedEnd >= sourceRangeEnd
-                    ):
+                    elif seedStart >= sourceRangeStart and seedStart < sourceRangeEnd and seedEnd >= sourceRangeEnd:
                         # The whole range is not in the mapped range, need to split it, extra is on the right
                         p2Seeds.append((sourceRangeEnd, seedEnd, depth))
                         seedStart = targetRangeStart + (seedStart - sourceRangeStart)
-                        seedEnd = targetRangeStart + (
-                            sourceRangeEnd - 1 - sourceRangeStart
-                        )
+                        seedEnd = targetRangeStart + (sourceRangeEnd - 1 - sourceRangeStart)
                         break
-                    elif (
-                        seedStart < sourceRangeStart
-                        and seedEnd > sourceRangeStart
-                        and seedEnd <= sourceRangeEnd
-                    ):
+                    elif seedStart < sourceRangeStart and seedEnd > sourceRangeStart and seedEnd <= sourceRangeEnd:
                         # The whole range is not in the mapped range, need to split it, extra is on the left
                         p2Seeds.append((seedStart, sourceRangeStart - 1, depth))
-                        seedStart = targetRangeStart + (
-                            sourceRangeStart - sourceRangeStart
-                        )
+                        seedStart = targetRangeStart + (sourceRangeStart - sourceRangeStart)
                         seedEnd = targetRangeStart + (seedEnd - sourceRangeStart)
                         break
 
